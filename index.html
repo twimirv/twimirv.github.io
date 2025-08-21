@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>This is just a test. Nothing to see here. Move along</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: linear-gradient(#66ccff, #99ddff);
+    font-family: 'Press Start 2P', cursive;
+    overflow: hidden;
+  }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    background: linear-gradient(45deg, #ff66cc, #ffff66, #66ff66, #66ffff);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 5s ease infinite;
+    text-align: center;
+    text-shadow: 2px 2px #00000055;
+    image-rendering: pixelated;
+  }
+  @keyframes gradientShift {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+</style>
+</head>
+<body>
+<canvas id="clouds"></canvas>
+<h1>This is just a test. Nothing to see here. Move along</h1>
+<script>
+const canvas = document.getElementById('clouds');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const cloudImg = document.createElement('canvas');
+const cctx = cloudImg.getContext('2d');
+cloudImg.width = 64;
+cloudImg.height = 32;
+// Draw simple pixelated cloud
+cctx.fillStyle = '#fff';
+cctx.fillRect(16, 8, 32, 16);
+cctx.fillRect(8, 12, 48, 8);
+
+let clouds = [];
+for (let i = 0; i < 10; i++) {
+  clouds.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height * 0.5,
+    speed: 0.2 + Math.random() * 0.3,
+    size: 2 + Math.random() * 3
+  });
+}
+
+function drawClouds() {
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  clouds.forEach(cloud => {
+    ctx.drawImage(cloudImg, cloud.x, cloud.y, cloudImg.width * cloud.size, cloudImg.height * cloud.size);
+    cloud.x += cloud.speed;
+    if (cloud.x > canvas.width) {
+      cloud.x = -cloudImg.width * cloud.size;
+      cloud.y = Math.random() * canvas.height * 0.5;
+    }
+  });
+  requestAnimationFrame(drawClouds);
+}
+
+drawClouds();
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
